@@ -1,3 +1,4 @@
+import os
 # Use a pipeline as a high-level helper
 from transformers import pipeline
 from typing import Union
@@ -7,8 +8,9 @@ import requests
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 
-
 app = FastAPI()
+
+app_port = os.environ.get("PORT", 8000)
 
 origins = [
     "*"
@@ -43,4 +45,4 @@ async def generate_alt_text(request_body: ImageUrl):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.1", port=app_port)
