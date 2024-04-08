@@ -1,0 +1,7 @@
+transformers[tf-cpu]
+tensorflow
+fastapi
+uvicorn
+pydantic
+pillow
+starlette
