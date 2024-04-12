@@ -1,7 +1,10 @@
-transformers[tf-cpu]
-tensorflow
+transformers
+torch
 fastapi
 uvicorn
 pydantic
-pillow
+Pillow
 starlette
+lru_cache
+py-hot-reload
+optimum

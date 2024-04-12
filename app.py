@@ -1,17 +1,15 @@
 import os
-# Use a pipeline as a high-level helper
 from transformers import pipeline
 from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
-
-import requests
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
+from utils.index import generate_alt_text_cached, is_base64, is_url, process_image
 
 app = FastAPI()
 
 app_port = os.environ.get("PORT", 8000)
-
+app_host = os.environ.get("HOST", "127.0.0.1")
 origins = [
     "*"
 ]
@@ -29,20 +27,28 @@ class ImageUrl(BaseModel):
 
 @app.post("/generate-alt-text")
 async def generate_alt_text(request_body: ImageUrl):
-    print("Request_body.imageUrl:", request_body.imageUrl)
-    
-    altTextGenerator = pipeline("image-to-text", model="Salesforce/blip-image-captioning-large")
-    
-    try:
-        # Generate alt text for the image URL
-        example = altTextGenerator(request_body.imageUrl)
-        alt_text = example[0]['generated_text']
-        print("Generated Alt Text:", alt_text)
-        return {"alt_text": alt_text}
-    except Exception as e:
-        print("Error generating alt text:", e)
-        return {"error": "Failed to generate alt text"}
+    if(len(request_body.imageUrl) == 0):
+        return {"error": "Invalid image URL"}
+
+    image_url = process_image(request_body.imageUrl)
+
+    alt_text = generate_alt_text_cached(image_url)
+
+    if alt_text is None:
+        # Cache miss, generate alt text and update cache
+            altTextGenerator = pipeline("image-to-text", "Salesforce/blip-image-captioning-large", max_new_tokens=10)
+            try:
+                # Generate alt text for the image URL
+                result = altTextGenerator(request_body.imageUrl)
+                alt_text = result[0]['generated_text']
+                print(result)
+                return {"alt_text": alt_text}
+            except Exception as e:
+                print("Error generating alt text:", e)
+                return {"error": "Failed to generate alt text"}
+
+    return {"alt_text": alt_text}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=app_port)
+    uvicorn.run(app, host=app_host, port=app_port)
