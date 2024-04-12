@@ -1,7 +1,4 @@
-from functools import lru_cache
-from transformers import pipeline
 from PIL import Image
-import requests
 import io
 import base64
 import re
@@ -9,14 +6,6 @@ from urllib.request import urlopen
 
 MAX_DIMENSION = 320
 MIN_DIMENSION = 100
-
-#cache images
-@lru_cache(maxsize=1000)
-def generate_alt_text_cached(image_url):
-    altTextGenerator = pipeline("image-to-text", model="Salesforce/blip2-opt-2.7b")
-    example = altTextGenerator(image_url)
-    alt_text = example[0]['generated_text']
-    return alt_text
 
 def is_base64(input_str):
     try:

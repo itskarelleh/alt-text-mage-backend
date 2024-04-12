@@ -4,7 +4,8 @@ from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from pydantic import BaseModel
-from utils.index import generate_alt_text_cached, is_base64, is_url, process_image
+from utils.image_processing import process_image
+from utils.model import generate_alt_text, generate_alt_text_cached
 
 app = FastAPI()
 
@@ -36,12 +37,9 @@ async def generate_alt_text(request_body: ImageUrl):
 
     if alt_text is None:
         # Cache miss, generate alt text and update cache
-            altTextGenerator = pipeline("image-to-text", "Salesforce/blip-image-captioning-large", max_new_tokens=10)
             try:
-                # Generate alt text for the image URL
-                result = altTextGenerator(request_body.imageUrl)
-                alt_text = result[0]['generated_text']
-                print(result)
+                alt_text = generate_alt_text(request_body.imageUrl)
+
                 return {"alt_text": alt_text}
             except Exception as e:
                 print("Error generating alt text:", e)
