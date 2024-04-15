@@ -5,6 +5,7 @@ model_id = "Salesforce/blip-image-captioning-large"
 altTextGenerator = pipeline("image-to-text", model_id, max_new_tokens=200)
 
 def generate_alt_text(image_url):
+    print("Generating alt text for image URL:", image_url)
     result = altTextGenerator(image_url)
     alt_text = result[0]['generated_text']
     
