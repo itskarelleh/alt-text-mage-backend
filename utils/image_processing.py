@@ -1,6 +1,7 @@
 from PIL import Image
 import io
 import base64
+import requests
 import re
 from urllib.request import urlopen
 
@@ -8,11 +9,20 @@ MAX_DIMENSION = 320
 MIN_DIMENSION = 100
 
 def is_base64(input_str):
-    try:
-        # Attempt to decode the input string as base64
-        base64.b64decode(input_str)
-        return True
-    except:
+    parts = input_str.split(',')
+    if len(parts) != 2:
+        return False
+    
+    # Check if the encoding is base64
+    if ';base64' in parts[0]:
+        try:
+            # Attempt to decode the base64 encoded data
+            base64.b64decode(parts[1])
+            return True
+        except:
+            return False
+    else:
+        # If encoding is not specified or not base64, return false
         return False
     
 def is_url(input_str):
@@ -27,29 +37,15 @@ def is_url(input_str):
     
 def process_image(input_data):
     if is_base64(input_data):
-        # Resize base64 image
         return resize_base64_image(input_data)
-    elif(input_data.startswith("blob:")):
-        # Extract base64 image data from the URL
-        base64_data = input_data.split(":")[1]
-        # Resize base64 image
-        return resize_base64_image(base64_data)
     elif is_url(input_data):
        return resize_image(input_data)
+    elif input_data.startswith("blob:"):
+        return
     else:
         raise ValueError("Input data is neither a base64 string nor a URL to an online image.")
 
 def resize_base64_image(base64_image):
-    """Resizes a base64-encoded image if its width or height is greater than MAX_DIMENSION,
-    ensuring the resized image is at least MIN_DIMENSION in both dimensions.
-
-    Args:
-        base64_image: The base64-encoded image string.
-
-    Returns:
-        The resized base64-encoded image string, or the original string if no resizing was needed.
-    """
-
     try:
         # Decode the base64-encoded image
         img_bytes = base64.b64decode(base64_image)
@@ -77,18 +73,7 @@ def resize_base64_image(base64_image):
         print(f"Error resizing base64 image: {e}")
         return base64_image  # Returning the original base64 string in case of errors
 
-
 def resize_image(image_url):
-  """Resizes an image from a URL if its width or height is greater than MAX_DIMENSION,
-  ensuring the resized image is at least MIN_DIMENSION in both dimensions.
-
-  Args:
-      image_url: The URL of the image (must start with http or https).
-
-  Returns:
-      The resized base64-encoded image string, or None if there was an error.
-  """
-
   try:
     # Check if URL starts with http or https
     if not image_url.startswith("http"):
@@ -122,3 +107,25 @@ def resize_image(image_url):
   except Exception as e:
     print(f"Error resizing image: {e}")
     return None  # Returning None in case of errors
+
+
+def convert_to_base64(image_url):
+    try:
+        # Fetch the blob data from the URL
+        response = requests.get(image_url)
+        
+        # Check if the request was successful
+        if response.status_code == 200:
+            blob_data = response.content
+            
+            # Convert blob data to base64
+            base64_string = base64.b64encode(blob_data).decode('utf-8')
+            print("Converted blob to base64 successfully.")
+            print(base64_string)
+            return base64_string
+        else:
+            print("Error fetching blob data. Status code:", response.status_code)
+            return None
+    except Exception as e:
+        print("Error converting blob to base64:", e)
+        return None

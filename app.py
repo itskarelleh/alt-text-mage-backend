@@ -24,26 +24,25 @@ app.add_middleware(
 )
 
 class ImageUrl(BaseModel):
-    imageUrl: str
+    image_url: str
 
 @app.post("/generate-alt-text")
 async def generate_alt_text(request_body: ImageUrl):
-    if(len(request_body.imageUrl) == 0):
+    if(len(request_body.image_url) == 0):
         return {"error": "Invalid image URL"}
 
-    image_url = process_image(request_body.imageUrl)
+    image_url = process_image(request_body.image_url)
 
     alt_text = generate_alt_text_cached(image_url)
 
     if alt_text is None:
-        # Cache miss, generate alt text and update cache
-            try:
-                alt_text = generate_alt_text(request_body.imageUrl)
+        try:
+            alt_text = generate_alt_text(request_body.image_url)
 
-                return {"alt_text": alt_text}
-            except Exception as e:
-                print("Error generating alt text:", e)
-                return {"error": "Failed to generate alt text"}
+            return {"alt_text": alt_text}
+        except Exception as e:
+            print("Error generating alt text:", e)
+            return {"error": "Failed to generate alt text"}
 
     return {"alt_text": alt_text}
 
