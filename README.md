@@ -1,13 +1,12 @@
 # Alt Text Genie - Backend
 The backend for Alt Text Genie
 ---
-title: Alt Text Genie
-emoji: 🖼️
-colorFrom: #1AC3FF
-colorTo: #FC8145
-sdk:
-sdk_version: 1.0
-app_file: app.py
+title: 'Alt Text Genie'
+emoji: '🖼️'
+colorFrom: 'pink'
+colorTo: 'purple'
+sdk: 'docker'
+app_file: 'app.py'
 pinned: false
 ---
 
