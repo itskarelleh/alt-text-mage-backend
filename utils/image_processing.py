@@ -30,11 +30,11 @@ def process_image(input_data):
     if is_base64(input_data):
         # Resize base64 image
         return resize_base64_image(input_data)
-    # elif(input_data.startswith("blob:")):
-    #     # Extract base64 image data from the URL
-    #     base64_data = input_data.split(":")[1]
-    #     # Resize base64 image
-        # return resize_base64_image(base64_data)
+    elif(input_data.startswith("blob:")):
+        # Extract base64 image data from the URL
+        base64_data = input_data.split(":")[1]
+        # Resize base64 image
+        return resize_base64_image(base64_data)
     elif is_url(input_data):
        return resize_image(input_data)
     else:
@@ -68,7 +68,6 @@ def resize_base64_image(base64_image):
     except Exception as e:
         print(f"Error resizing base64 image: {e}")
         return base64_image  # Returning the original base64 string in case of errors
-
 
 def resize_image(image_url):
     

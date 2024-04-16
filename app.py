@@ -51,3 +51,5 @@ async def generate_alt_text(request_body: ImageUrl):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=app_host, port=app_port)
+    
+ 
