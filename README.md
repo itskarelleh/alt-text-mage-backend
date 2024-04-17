@@ -1,5 +1,3 @@
-# Alt Text Genie - Backend
-The backend for Alt Text Genie
 ---
 title: 'Alt Text Genie'
 emoji: '🖼️'
@@ -9,6 +7,10 @@ sdk: 'docker'
 app_file: 'app.py'
 pinned: false
 ---
+
+# Alt Text Genie - Backend
+The backend for Alt Text Genie
+
 
 # Install and Setup
 Enter the following commands in zsh terminal:
