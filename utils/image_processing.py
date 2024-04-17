@@ -24,7 +24,7 @@ def is_url(input_str):
         r'(?::\d+)?'  # optional port
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return re.match(url_pattern, input_str) is not None
-    
+    rim
 def process_image(input_data):
     print("processing image:", input_data)
     if is_base64(input_data):
@@ -69,6 +69,16 @@ def resize_base64_image(base64_image):
         print(f"Error resizing base64 image: {e}")
         return base64_image  # Returning the original base64 string in case of errors
 
+def resize_blob_image(blob_image):
+    #Check if the input is a valid blob URL
+    try:
+        # Extract base64 image data from the blob URL
+        base64_data = blob_image.split(":")[1]
+        return resize_base64_image(base64_data)
+    except Exception as e:
+        print(f"Error resizing blob image: {e}")
+        return blob_image  # Returning the original blob image in case of errors
+        
 def resize_image(image_url):
     
     try:
