@@ -1,5 +1,5 @@
 ---
-title: 'Alt Text Genie'
+title: 'Alt Text Mage'
 emoji: '🖼️'
 colorFrom: 'pink'
 colorTo: 'purple'
@@ -9,7 +9,16 @@ pinned: false
 ---
 
 # Alt Text Genie - Backend
-The backend for Alt Text Genie
+The backend for Alt Text Mage, an AI/ML-powered alt text generator that allows bloggers and content editors to quickly generate alt text for better accessibility and SEO.
+
+## Stack
+
+- Python
+- Fast API
+- Supabase(Auth and Storage)
+- Stripe
+- Hugging Face Transformer
+- BLIP model
 
 
 # Install and Setup
